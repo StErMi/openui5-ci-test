@@ -1,14 +1,33 @@
 {
-	"newTodo": "",
-	"todos": [{
-			"title": "Start this app",
-			"completed": true
-		},
-		{
-			"title": "Learn OpenUI5",
-			"completed": false
+	"newProduct": {
+		"name": null,
+		"quantity": null,
+		"price": null,
+		"currency": "EUR",
+		"available": true
+	},
+	"emptyProduct": {
+		"name": null,
+		"quantity": null,
+		"price": null,
+		"currency": "EUR",
+		"available": true
+	},
+	"products": [{
+			"name": "Shappire Nitro+ RX580 4GB",
+			"quantity": 3,
+			"price": 280,
+			"currency": "EUR",
+			"available": false
+		}, {
+			"name": "Shappire Nitro+ RX580 8GB",
+			"quantity": 1,
+			"price": 340,
+			"currency": "EUR",
+			"available": true
 		}
 	],
 	"itemsRemovable": true,
-	"completedCount": 1
+	"completedCount": 1,
+	"totalValue": 0
 }

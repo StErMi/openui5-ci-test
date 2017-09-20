@@ -2,66 +2,68 @@ sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/model/Filter",
-	"sap/ui/model/FilterOperator"
-], function(Controller, JSONModel, Filter, FilterOperator) {
+	"sap/ui/model/FilterOperator",
+	'sap/ui/demo/todo/model/Formatter',
+], function(Controller, JSONModel, Filter, FilterOperator, Formatter) {
 	'use strict';
 
 	return Controller.extend('sap.ui.demo.todo.controller.App', {
 
+		/**
+		 * Init controller
+		 */
 		onInit: function() {
 			this.aSearchFilters = [];
 			this.aTabFilters = [];
-			
-
-			this will not fail the build
 		},
 
 		/**
 		 * Adds a new todo item to the bottom of the list.
 		 */
-		addTodo: function() {
+		onAddNewProduct: function() {
 			var oModel = this.getView().getModel();
-			var aTodos = jQuery.extend(true, [], oModel.getProperty('/todos'));
+			var aProducts = jQuery.extend(true, [], oModel.getProperty('/products'));
+			var oEmptyProduct = jQuery.extend(true, {}, oModel.getProperty('/emptyProduct'));
+			var oNewProduct = jQuery.extend(true, {}, oModel.getProperty('/newProduct'));
 
-			aTodos.push({
-				title: oModel.getProperty('/newTodo'),
-				completed: false
-			});
+			aProducts.push(oNewProduct);
 
-			oModel.setProperty('/todos', aTodos);
-			oModel.setProperty('/newTodo', '');
+			oModel.setProperty('/products', aProducts);
+			oModel.setProperty('/newProduct', oEmptyProduct);
 		},
 
 		/**
-		 * Removes all completed items from the todo list.
+		 * Removes all completed unavailable products from the list
 		 */
-		clearCompleted: function() {
+		clearUnavailable: function() {
 			var oModel = this.getView().getModel();
-			var aTodos = jQuery.extend(true, [], oModel.getProperty('/todos'));
+			var aProducts = jQuery.extend(true, [], oModel.getProperty('/products'));
 
-			var i = aTodos.length;
+			var i = aProducts.length;
 			while (i--) {
-				var oTodo = aTodos[i];
-				if (oTodo.completed) {
-					aTodos.splice(i, 1);
+				var oProduct = aProducts[i];
+				if (!oProduct.available) {
+					aProducts.splice(i, 1);
 				}
 			}
 
-			oModel.setProperty('/todos', aTodos);
+			oModel.setProperty('/products', aProducts);
 		},
 
+
 		/**
-		 * Updates the number of items not yet completed
+		 * Update total values counting only available products
 		 */
-		updateItemsLeftCount: function() {
+		updateTotalValue: function() {
 			var oModel = this.getView().getModel();
-			var aTodos = oModel.getProperty('/todos') || [];
+			var aProducts = oModel.getProperty('/products') || [];
 
-			var iItemsLeft = aTodos.filter(function(oTodo) {
-				return oTodo.completed !== true;
-			}).length;
+			var dTotalValue = 0;
+			aProducts.forEach(function(oProduct) {
+				dTotalValue += oProduct.available ? oProduct.price * oProduct.quantity : 0;
+			});
 
-			oModel.setProperty('/itemsLeftCount', iItemsLeft);
+			oModel.setProperty('/totalValue', dTotalValue);
 		},
 
 		/**
@@ -78,7 +80,7 @@ sap.ui.define([
 			var sQuery = oEvent.getSource().getValue();
 			if (sQuery && sQuery.length > 0) {
 				oModel.setProperty('/itemsRemovable', false);
-				var filter = new Filter("title", FilterOperator.Contains, sQuery);
+				var filter = new Filter("name", FilterOperator.Contains, sQuery);
 				this.aSearchFilters.push(filter);
 			} else {
 				oModel.setProperty('/itemsRemovable', true);
@@ -87,7 +89,11 @@ sap.ui.define([
 			this._applyListFilters();
 		},
 
-		onFilter: function(oEvent) {
+		/**
+		 * Filter products based on available status
+		 * @param {sap.ui.base.Event} oEvent Input changed event
+		 */
+		onFilterAvailable: function(oEvent) {
 
 			// First reset current filters
 			this.aTabFilters = [];
@@ -97,11 +103,11 @@ sap.ui.define([
 
 			// eslint-disable-line default-case
 			switch (sFilterKey) {
-				case "active":
-					this.aTabFilters.push(new Filter("completed", FilterOperator.EQ, false));
+				case "available":
+					this.aTabFilters.push(new Filter("available", FilterOperator.EQ, true));
 					break;
-				case "completed":
-					this.aTabFilters.push(new Filter("completed", FilterOperator.EQ, true));
+				case "not-available":
+					this.aTabFilters.push(new Filter("available", FilterOperator.EQ, false));
 					break;
 				case "all":
 				default:
@@ -111,8 +117,11 @@ sap.ui.define([
 			this._applyListFilters();
 		},
 
+		/**
+		 * Apply filters
+		 */
 		_applyListFilters: function() {
-			var oList = this.byId("todoList");
+			var oList = this.byId("productList");
 			var oBinding = oList.getBinding("items");
 
 			oBinding.filter(this.aSearchFilters.concat(this.aTabFilters), "todos");
