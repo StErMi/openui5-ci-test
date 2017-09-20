@@ -11,6 +11,9 @@ sap.ui.define([
 		onInit: function() {
 			this.aSearchFilters = [];
 			this.aTabFilters = [];
+			
+
+			this will not fail the build
 		},
 
 		/**
