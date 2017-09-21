@@ -11,7 +11,6 @@ sap.ui.require([
 	"use strict";
 
 	var sViewName = "sap.ui.demo.todo.view.App";
-	var sAddToItemInputId = "productForm";
 	var sProductFormAddButton = "productFormAddButton";
 	var sSearchTodoItemsInputId = "searchProductsInput";
 	var sItemListId = "productList";
