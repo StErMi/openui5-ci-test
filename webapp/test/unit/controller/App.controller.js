@@ -41,6 +41,7 @@ sap.ui.define([
 		// Assumption
 		assert.strictEqual(fnIsolatedFormatter(true), "Nope", "Formatted text for unavailable items is correct");
 		assert.strictEqual(fnIsolatedFormatter(false), "Yes", "Formatted text for available items is correct");
+		assert.strictEqual(fnIsolatedFormatter(null), "", "Formatted text for null items is correct");
 	});
 	
 	QUnit.test("Test unavailable text status formatter", function(assert) {
@@ -54,6 +55,7 @@ sap.ui.define([
 		// Assumption
 		assert.strictEqual(fnIsolatedFormatter(true), "Error", "Formatted text for unavailable items is correct");
 		assert.strictEqual(fnIsolatedFormatter(false), "Success", "Formatted text for available items is correct");
+		assert.strictEqual(fnIsolatedFormatter(null), "None", "Formatted text for null items is correct");
 	});
 
 	QUnit.test("Should add a product element to the model", function(assert) {
