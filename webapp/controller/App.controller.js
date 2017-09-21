@@ -42,7 +42,7 @@ sap.ui.define([
 			var i = aProducts.length;
 			while (i--) {
 				var oProduct = aProducts[i];
-				if (!oProduct.available) {
+				if (oProduct.unavailable) {
 					aProducts.splice(i, 1);
 				}
 			}
@@ -60,7 +60,7 @@ sap.ui.define([
 
 			var dTotalValue = 0;
 			aProducts.forEach(function(oProduct) {
-				dTotalValue += oProduct.available ? oProduct.price * oProduct.quantity : 0;
+				dTotalValue += !oProduct.unavailable ? oProduct.price * oProduct.quantity : 0;
 			});
 
 			oModel.setProperty('/totalValue', dTotalValue);
@@ -104,10 +104,10 @@ sap.ui.define([
 			// eslint-disable-line default-case
 			switch (sFilterKey) {
 				case "available":
-					this.aTabFilters.push(new Filter("available", FilterOperator.EQ, true));
+					this.aTabFilters.push(new Filter("unavailable", FilterOperator.EQ, false));
 					break;
 				case "not-available":
-					this.aTabFilters.push(new Filter("available", FilterOperator.EQ, false));
+					this.aTabFilters.push(new Filter("unavailable", FilterOperator.EQ, true));
 					break;
 				case "all":
 				default:

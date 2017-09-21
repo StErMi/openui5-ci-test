@@ -3,23 +3,23 @@ sap.ui.define(function() {
 
 	var Formatter = {
 
-        availableText : function (available) {
-			if (available === null || available === undefined) {
+        unavailableText : function (unavailable) {
+			if (unavailable === null || unavailable === undefined) {
 				return "";
-			} else if (available) {
-				return "Yes";
-			} else {
+			} else if (unavailable) {
 				return "Nope";
+			} else {
+				return "Yes";
 			}
 		},
 
-		availableState :  function (available) {
-			if (available === null || available === undefined) {
+		unavailableState :  function (unavailable) {
+			if (unavailable === null || unavailable === undefined) {
 				return "None";
-			} else if (available) {
-				return "Success";
-			} else {
+			} else if (unavailable) {
 				return "Error";
+			} else {
+				return "Success";
 			}
 		}
 	};

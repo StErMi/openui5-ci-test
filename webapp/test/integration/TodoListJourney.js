@@ -14,10 +14,10 @@ sap.ui.define([
 		Given.iStartTheApp();
 
 		//Actions
-		When.onTheAppPage.iEnterTextForNewItemAndPressEnter("my test");
+		When.onTheAppPage.iEnterTextForNewProductAndPressEnter("Asus ROG Strix RX570 4GB", 3, 100, false);
 
 		// Assertions
-		Then.onTheAppPage.iShouldSeeTheItemBeingAdded(3, "my test").
+		Then.onTheAppPage.iShouldSeeTheItemBeingAdded(3, "Asus ROG Strix RX570 4GB").
 			and.iTeardownTheApp();
 	});
 
@@ -27,13 +27,13 @@ sap.ui.define([
 		Given.iStartTheApp();
 
 		//Actions
-		When.onTheAppPage.iEnterTextForNewItemAndPressEnter("my test")
+		When.onTheAppPage.iEnterTextForNewProductAndPressEnter("Asus ROG Strix RX570 4GB", 3, 100, false)
 			.and.iSelectAllItems(true)
-			.and.iClearTheCompletedItems()
-			.and.iEnterTextForNewItemAndPressEnter("my test");
+			.and.iClearTheUnavailableItems()
+			.and.iEnterTextForNewProductAndPressEnter("Asus ROG Strix RX570 8GB", 3, 100, false);
 
 		// Assertions
-		Then.onTheAppPage.iShouldSeeAllButOneItemBeingRemoved("my test").
+		Then.onTheAppPage.iShouldSeeAllButOneItemBeingRemoved("Asus ROG Strix RX570 8GB").
 			and.iTeardownTheApp();
 	});
 
@@ -43,11 +43,11 @@ sap.ui.define([
 		Given.iStartTheApp();
 
 		//Actions
-		When.onTheAppPage.iEnterTextForNewItemAndPressEnter("my test")
+		When.onTheAppPage.iEnterTextForNewProductAndPressEnter("Asus ROG Strix RX570 4GB", 3, 100, false)
 			.and.iSelectTheLastItem(true);
 
 		// Assertions
-		Then.onTheAppPage.iShouldSeeTheLastItemBeingCompleted(true).
+		Then.onTheAppPage.iShouldSeeTheLastItemBeingUnavailable(true).
 			and.iTeardownTheApp();
 	});
 
@@ -57,15 +57,15 @@ sap.ui.define([
 		Given.iStartTheApp();
 
 		//Actions
-		When.onTheAppPage.iEnterTextForNewItemAndPressEnter("my test")
+		When.onTheAppPage.iEnterTextForNewProductAndPressEnter("Asus ROG Strix RX570 4GB", 3, 100, false)
 			.and.iSelectAllItems(true)
-			.and.iClearTheCompletedItems()
-			.and.iEnterTextForNewItemAndPressEnter("my test")
+			.and.iClearTheUnavailableItems()
+			.and.iEnterTextForNewProductAndPressEnter("Asus ROG Strix RX570 8GB", 3, 100, false)
 			.and.iSelectTheLastItem(true)
 			.and.iSelectTheLastItem(false);
 
 		// Assertions
-		Then.onTheAppPage.iShouldSeeTheLastItemBeingCompleted(false).
+		Then.onTheAppPage.iShouldSeeTheLastItemBeingUnavailable(false).
 			and.iTeardownTheApp();
 	});
 
@@ -75,17 +75,17 @@ sap.ui.define([
 		Given.iStartTheApp();
 
 		//Actions
-		When.onTheAppPage.iEnterTextForNewItemAndPressEnter("my test")
+		When.onTheAppPage.iEnterTextForNewProductAndPressEnter("Asus ROG Strix RX570 4GB", 3, 100, false)
 			.and.iSelectAllItems(true)
-			.and.iClearTheCompletedItems()
-			.and.iEnterTextForNewItemAndPressEnter("first")
+			.and.iClearTheUnavailableItems()
+			.and.iEnterTextForNewProductAndPressEnter("Asus ROG Strix RX570 8GB", 3, 100, false)
 			.and.iSelectTheLastItem(true)
-			.and.iEnterTextForNewItemAndPressEnter("second")
-			.and.iEnterTextForNewItemAndPressEnter("third")
+			.and.iEnterTextForNewProductAndPressEnter("EVGA 1080TI 8GB", 3, 100, false)
+			.and.iEnterTextForNewProductAndPressEnter("EVGA 1080TI 4GB", 3, 100, false)
 			.and.iSelectTheLastItem(true);
 
 		// Assertions
-		Then.onTheAppPage.iShouldSeeItemLeftCount(1).
+		Then.onTheAppPage.iShouldSeeTotalValuePrice(300).
 		and.iTeardownTheApp();
 	});
 

@@ -4,17 +4,19 @@ sap.ui.require([
 	"sap/ui/test/matchers/AggregationLengthEquals",
 	"sap/ui/test/matchers/PropertyStrictEquals",
 	"sap/ui/test/matchers/Properties",
+	"sap/ui/test/matchers/LabelFor",
 	"sap/ui/test/actions/EnterText",
 	"sap/ui/test/actions/Press"
-], function (Opa5, Common, AggregationLengthEquals, PropertyStrictEquals, Properties, EnterText, Press) {
+], function (Opa5, Common, AggregationLengthEquals, PropertyStrictEquals, Properties, LabelFor, EnterText, Press) {
 	"use strict";
 
 	var sViewName = "sap.ui.demo.todo.view.App";
-	var sAddToItemInputId = "addTodoItemInput";
-	var sSearchTodoItemsInputId = "searchTodoItemsInput";
-	var sItemListId = "todoList";
-	var sClearCompletedId = "clearCompleted";
-	var sItemsLeftLabelId = "itemsLeftLabel";
+	var sAddToItemInputId = "productForm";
+	var sProductFormAddButton = "productFormAddButton";
+	var sSearchTodoItemsInputId = "searchProductsInput";
+	var sItemListId = "productList";
+	var sClearUnavailableId = "clearUnavailable";
+	var sItemsLeftLabelId = "totalValueLabel";
 
 	Opa5.createPageObjects({
 		onTheAppPage: {
@@ -22,12 +24,45 @@ sap.ui.require([
 			baseClass: Common,
 
 			actions: {
-				iEnterTextForNewItemAndPressEnter: function(text) {
+				iEnterTextForNewProductAndPressEnter: function(name, quantity, price, unavailable) {
 					return this.waitFor({
-						id: sAddToItemInputId,
 						viewName: sViewName,
-						actions: [new EnterText({ text: text })],
-						errorMessage: "The text cannot be entered"
+						controlType: "sap.m.Input",
+						matchers: new LabelFor({
+							text: "Name"
+						}),
+						actions: new EnterText({text: name}),
+						errorMessage: "Failed to fulfill Name input"
+					}).waitFor({
+						viewName: sViewName,
+						controlType: "sap.m.Input",
+						matchers: new LabelFor({
+							text: "Quantity"
+						}),
+						actions: new EnterText({text: quantity}),
+						errorMessage: "Failed to fulfill Quantity input"
+					}).waitFor({
+						viewName: sViewName,
+						controlType: "sap.m.Input",
+						matchers: new LabelFor({
+							text: "Price"
+						}),
+						actions: new EnterText({text: price}),
+						errorMessage: "Failed to fulfill Price input"
+					}).waitFor({
+						viewName: sViewName,
+						controlType: "sap.m.CheckBox",
+						matchers: new LabelFor({
+							text: "Unavialable"
+						}),
+						actions: unavailable ? new Press() : [],
+						errorMessage: "Failed to fulfill Unavialable checkbox"
+					}).waitFor({
+						id: sProductFormAddButton,
+						viewName: sViewName,
+						controlType: "sap.m.Button",
+						actions: new Press(),
+						errorMessage: "Form add button can not be pressed"
 					});
 				},
 				iEnterTextForSearchAndPressEnter: function(text) {
@@ -56,7 +91,6 @@ sap.ui.require([
 						id: sItemListId,
 						viewName: sViewName,
 						actions: [function(oList) {
-
 							oList.getItems().forEach(function(oListItem) {
 								this._triggerCheckboxSelection(oListItem, bSelected)
 
@@ -69,14 +103,14 @@ sap.ui.require([
 					//determine existing selection state and ensure that it becomes <code>bSelected</code>
 					if (oListItem.getSelected() && !bSelected || !oListItem.getSelected() && bSelected) {
 						var oPress = new Press();
-						//search within the CustomListItem for the checkbox id ending with 'selectMulti-CB'
-						oPress.controlAdapters["sap.m.CustomListItem"] = "selectMulti-CB";
+						//search within the ColumnListItem for the checkbox id ending with 'selectMulti-CB'
+						oPress.controlAdapters["sap.m.ColumnListItem"] = "selectMulti-CB";
 						oPress.executeOn(oListItem);
 					}
 				},
-				iClearTheCompletedItems: function() {
+				iClearTheUnavailableItems: function() {
 					return this.waitFor({
-						id: sClearCompletedId,
+						id: sClearUnavailableId,
 						viewName: sViewName,
 						actions: [new Press()],
 						errorMessage: "checkbox cannot be pressed"
@@ -105,7 +139,7 @@ sap.ui.require([
 							length: iItemCount
 						}), function(oControl) {
 							var iLength = oControl.getItems().length;
-							var oInput = oControl.getItems()[iLength - 1].getContent()[0];
+							var oInput = oControl.getItems()[iLength - 1].getCells()[0];
 							return new PropertyStrictEquals({
 								name: "value",
 								value: sLastAddedText
@@ -117,13 +151,13 @@ sap.ui.require([
 						errorMessage: "List does not have expected entry '" + sLastAddedText + "'."
 					});
 				},
-				iShouldSeeTheLastItemBeingCompleted: function(bSelected) {
+				iShouldSeeTheLastItemBeingUnavailable: function(bSelected) {
 					return this.waitFor({
 						id: sItemListId,
 						viewName: sViewName,
 						matchers: [function(oControl) {
 							var iLength = oControl.getItems().length;
-							var oInput = oControl.getItems()[iLength - 1].getContent()[0];
+							var oInput = oControl.getItems()[iLength - 1].getCells()[0];
 							return bSelected && !oInput.getEnabled() || !bSelected && oInput.getEnabled();
 						}],
 						success: function() {
@@ -140,7 +174,7 @@ sap.ui.require([
 							name: "items",
 							length: 1
 						}), function(oControl) {
-							var oInput = oControl.getItems()[0].getContent()[0];
+							var oInput = oControl.getItems()[0].getCells()[0];
 							return new PropertyStrictEquals({
 								name: "value",
 								value: sLastItemText
@@ -152,17 +186,17 @@ sap.ui.require([
 						errorMessage: "List does not have expected entry '" + sLastItemText + "'."
 					});
 				},
-				iShouldSeeItemLeftCount: function(iNumberItemsLeft) {
+				iShouldSeeTotalValuePrice: function(iTotalValuePrice) {
 					return this.waitFor({
 						id: sItemsLeftLabelId,
 						viewName: sViewName,
 						matchers: [new PropertyStrictEquals({
 							name: "text",
-							value: iNumberItemsLeft + (iNumberItemsLeft === 1 ? " item left" : " items left")
+							value: "Total available price value: " + iTotalValuePrice + " EUR"
 						})
 						],
 						success: function() {
-							Opa5.assert.ok(true, "" + iNumberItemsLeft + " items left");
+							Opa5.assert.ok(true, "" + iTotalValuePrice + " total value");
 						},
 						errorMessage: "Items are not selected."
 					});

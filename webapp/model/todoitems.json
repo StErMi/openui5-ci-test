@@ -4,27 +4,27 @@
 		"quantity": null,
 		"price": null,
 		"currency": "EUR",
-		"available": true
+		"unavailable": false
 	},
 	"emptyProduct": {
 		"name": null,
 		"quantity": null,
 		"price": null,
 		"currency": "EUR",
-		"available": true
+		"unavailable": false
 	},
 	"products": [{
 			"name": "Shappire Nitro+ RX580 4GB",
 			"quantity": 3,
 			"price": 280,
 			"currency": "EUR",
-			"available": false
+			"unavailable": true
 		}, {
 			"name": "Shappire Nitro+ RX580 8GB",
 			"quantity": 1,
 			"price": 340,
 			"currency": "EUR",
-			"available": true
+			"unavailable": false
 		}
 	],
 	"itemsRemovable": true,

@@ -14,7 +14,7 @@ sap.ui.define([
 		Given.iStartTheApp();
 
 		//Actions
-		When.onTheAppPage.iEnterTextForSearchAndPressEnter("earn");
+		When.onTheAppPage.iEnterTextForSearchAndPressEnter("8GB");
 
 		// Assertions
 		Then.onTheAppPage.iShouldSeeItemCount(1).
@@ -41,7 +41,7 @@ sap.ui.define([
 		Given.iStartTheApp();
 
 		//Actions
-		When.onTheAppPage.iEnterTextForSearchAndPressEnter("earn")
+		When.onTheAppPage.iEnterTextForSearchAndPressEnter("8GB")
 			.and.iEnterTextForSearchAndPressEnter("");
 
 		// Assertions

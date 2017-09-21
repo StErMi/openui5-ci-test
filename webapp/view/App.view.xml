@@ -6,19 +6,20 @@
 				<content>
 					<f:SimpleForm
 						editable="true"
+						id="productForm"
 						layout="ResponsiveGridLayout"
 						title="New Product">
 						<f:content>
 							<Label text="Name" />
-							<Input value="{/newProduct/name}" />
+							<Input id="productNameInput" value="{/newProduct/name}" />
 							<Label text="Quantity" />
-							<Input value="{/newProduct/quantity}" type="Number" />
+							<Input id="productQuantityInput" value="{/newProduct/quantity}" type="Number" />
 							<Label text="Price" />
-							<Input value="{/newProduct/price}" type="Number" />
-							<Label text="Avialable" />
-							<CheckBox selected="{/newProduct/available}" />
+							<Input id="productPriceInput" value="{/newProduct/price}" type="Number" />
+							<Label text="Unavialable" />
+							<CheckBox id="productUnavailableInput" selected="{/newProduct/unavailable}" />
 							<Label text="" />
-							<Button text="Add" press="onAddNewProduct">
+							<Button id="productFormAddButton" text="Add" press="onAddNewProduct">
 								<layoutData>
 									<l:GridData span="XL1 L2 M2 S4" />
 								</layoutData>
@@ -46,7 +47,7 @@
 								<Title text="Products" level="H2"/>
 								<ToolbarSpacer/>
 								<SearchField
-									id="searchTodoItemsInput"
+									id="searchProductsInput"
 									liveChange="onSearch"
 									width="70%" />
 							</Toolbar>
@@ -79,10 +80,12 @@
 							</Column>
 						</columns>
 						<items>
-							<ColumnListItem>
+							<ColumnListItem selected="{unavailable}">
 								<cells>
-									<Text
-										text="{name}"/>
+									<Input
+										class="todoListInput"
+										enabled="{= !${unavailable} }"
+										value="{name}"/>
 									<Text
 										text="{quantity}" />
 									<ObjectNumber
@@ -95,15 +98,13 @@
 									
 									<ObjectStatus
 											text="{
-												path: 'available',
-												formatter: 'sap.ui.demo.todo.model.Formatter.availableText'
+												path: 'unavailable',
+												formatter: 'sap.ui.demo.todo.model.Formatter.unavailableText'
 											}"
 											state="{
-												path: 'available',
-												formatter: 'sap.ui.demo.todo.model.Formatter.availableState'
+												path: 'unavailable',
+												formatter: 'sap.ui.demo.todo.model.Formatter.unavailableState'
 											}" />
-									<!-- <Text
-										text="{available}" /> -->
 								</cells>
 							</ColumnListItem>
 						</items>
